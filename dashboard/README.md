@@ -1,4 +1,26 @@
-# Tender Trail Watchtower
+# Watchtower dashboard
+
+The operator console served at `GET /`: the fleet of portals with their state, reason and model cost, and for each portal its reads and repairs, what each repair changed, and the tenders delivered. A static React + Vite + TypeScript SPA with no server of its own; it polls the routes in [`docs/DASHBOARD_API.md`](../docs/DASHBOARD_API.md).
+
+## Work on it
+
+```sh
+cd dashboard
+bun install --frozen-lockfile
+bun run dev        # dev server; it has no API behind it, so use ?demo (below)
+bun run test       # vitest
+bun run build      # static build to dashboard/dist/
+```
+
+Add `?demo` to the address to see the bundled snapshot in `src/demo/`. Demo data is shown only when asked for, so made-up portals never stand in for a down API.
+
+## Ship a change
+
+The app serves the build committed in `app/dashboard/static/`, not this folder. After `bun run build`, replace `app/dashboard/static/` with `dashboard/dist/` in the same pull request, and say in it that the tests passed.
+
+## Original build brief
+
+The first prompt the console was built from, kept as written. Where it and the code disagree, the code and `docs/DASHBOARD_API.md` win.
 
 Build “Watchtower / Delivery Ledger”, a client-only operator console for public tender delivery. Implement the actual React + Vite + TypeScript + Tailwind + shadcn/ui SPA, not a landing page. Static vite build, base "/", assetsDir "assets"; FastAPI will serve dist at /. Use hash navigation / or #/ and #/portal/{id}. No SSR, Lovable Cloud, Supabase, auth, server functions, proxy backend, external font, CDN, remote image, map, telemetry or runtime external request. Use bundled lucide-react icons and local CSS/inline SVG for all charts. Render portal URLs as text, not embedded resources.
 
@@ -16,24 +38,3 @@ Wire shapes (camelCase):
 - Visual system: light bg/surface/raised/inset #f5f7f7/#fff/#fff/#eef2f2; border/divider #cdd6d6/#dfe5e5; text/secondary/muted #152122/#405354/#536768; accent/ring #006d60/#007f71. State ink/tint pairs serving #006858/#dff4ed, healing #765300/#fbf0ca, integrating #33539a/#e9effc, failed #a02d40/#fbe8ec. Dark layers #101516/#171e20/#1e2729/#11191a, borders #425153/#303c3e, text #edf4f3/#c3d1d0/#a0b1b1, accent/ring #74d8c6/#86e9d7; state pairs #82debf/#193a31, #ecd17f/#393321, #afc6ff/#242f47, #ffacb6/#43282e. Use CSS variables. No orange accent. System sans, tabular numerals; 36px KPIs, 30px heading, 22px sections, 18px body, 16px labels at 1920. Spacing 4/8/12/16/24/32/48, radii 4/6/10, thin dividers, shadow only overlays. Pulse once on successful live poll; 700ms tint flash only on state change; respect reduced motion. Icon + word for all states. Descriptive tooltips: Serving = validated records available; Healing = fresh delivery interrupted, last correct records still available during repair/wait; Integrating = learning, nothing published yet; Failed = cannot deliver correctly, still checked.
 - At 1920x1080 show strip and all eight rows without scrolling; at 1440 tighten spacing; on phone reflow to labelled ledger items, wrapped strip and full-width run sheet, never drop reason or cost. Keyboard-visible focus, proper table headers, accessible chart summaries, Escape/focus restoration for drawers. Don't announce every 5-second poll to screen readers; announce meaningful state/source changes.
 - Acceptance: npm run build succeeds without a backend, FastAPI can serve the output unchanged, direct hash deep links work, no external network calls, theme works in both schemes. Test cold 404 → offline (→ demo only with `?demo`), live 200 empty, live → offline → live, stale navigation responses, null/zero usage, tender count preserved after failed read, and settings save error without losing edits.
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/d75bc88c-821c-4ebf-b2ef-fdc1102f30db).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
